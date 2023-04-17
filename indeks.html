@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Jadwal Sholat</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="Heading">
+        <h2>JADWAL SHOLAT TERBARU</h2>
+        <p>Menyediakan Informasi Jadwal Adzan dan Waktu Sholat Seluruh Kota Di Indonesia</p>
+        <img src="https://i.pinimg.com/474x/49/f9/20/49f92049e4ea852aca8ce33d36f000bc.jpg" alt="icon">
+    </div>
+    
+    <div class="Input_Kota">
+            <h4>Input Nama Kota</h4>
+            <form action="/proses" method="post">
+            <label for="nama-kota">Nama Kota:</label>
+            <input type="text" id="nama-kota" name="nama-kota">
+            <br>
+            <input type="submit" value="Kirim" onclick="getJadwalSholat(); return false;">
+            </form>
+    </div>
+    <div class="container">
+        <h3>Waktu Adzan dan Sholat</h3>
+        <section>
+            <h1>Sholat Subuh</h1>
+                <table>
+                    <tr>
+                        <th>Kota</th>
+                        <th>Tanggal</th>
+                        <th>Subuh</th>
+                    </tr>
+                    <tbody id="jadwal-sholat"></tbody>
+                </table>
+        </section>
+        <section>
+            <h1>Sholat Zuhur</h1>
+                <table>
+                    <tr>
+                        <th>Kota</th>
+                        <th>Tanggal</th>
+                        <th>Dhuhur</th>
+                    </tr>
+                    <tbody id="jadwal-sholat-zuhur"></tbody>
+                </table>
+        </section>
+        <section>
+            <h1>Sholat Asar</h1>
+                <table>
+                    <tr>
+                        <th>Kota</th>
+                        <th>Tanggal</th>
+                        <th>'Asar</th>
+                    </tr>
+                    <tbody id="jadwal-sholat-asr"></tbody>
+                </table>
+        </section>
+        <section>
+            <h1>Sholat Maghrib</h1>
+                <table>
+                    <tr>
+                        <th>Kota</th>
+                        <th>Tanggal</th>
+                        <th>Maghrib</th>
+                    </tr>
+                    <tbody id="jadwal-sholat-mgrb"></tbody>
+                </table>
+        </section>
+        <section>
+            <h1>Sholat Isya</h1>
+                <table>
+                    <tr>
+                        <th>Kota</th>
+                        <th>Tanggal</th>
+                        <th>Isya'</th>
+                    </tr>
+                    <tbody id="jadwal-sholat-isya"></tbody>
+                </table>
+        </section>
+    </div>
+    <script>
+        function getJadwalSholat() {
+            // Mengganti "nama_kota" dengan nama kota yang ingin Anda tampilkan jadwal sholatnya
+            var nama_kota= document.getElementById("nama-kota").value;
+            var url = "https://api.aladhan.com/v1/timingsByCity?city=" + nama_kota + "&country=Indonesia&method=8";
+            fetch(url)
+            .then(response => response.json())
+            .then(data => {
+                var jadwalSholat = data.data.timings;
+                var date = new Date();
+                var tanggal = date.toLocaleDateString('en-US', { timeZone: data.data.meta.timezone });
+                document.getElementById("jadwal-sholat").innerHTML = 
+                    "<tr>" +
+                    "<td>" + nama_kota + "</td>" +
+                    "<td>" + tanggal + "</td>" +
+                    "<td>" + jadwalSholat.Fajr + "</td>" +
+                    "</tr>";
+                document.getElementById("jadwal-sholat-zuhur").innerHTML = 
+                    "<tr>" +
+                    "<td>" + nama_kota + "</td>" +
+                    "<td>" + tanggal + "</td>" +
+                    "<td>" + jadwalSholat.Dhuhr + "</td>" +
+                    "</tr>";
+                document.getElementById("jadwal-sholat-asr").innerHTML = 
+                    "<tr>" +
+                    "<td>" + nama_kota + "</td>" +
+                    "<td>" + tanggal + "</td>" +
+                    "<td>" + jadwalSholat.Asr + "</td>" +
+                    "</tr>";
+                document.getElementById("jadwal-sholat-mgrb").innerHTML = 
+                    "<tr>" +
+                    "<td>" + nama_kota + "</td>" +
+                    "<td>" + tanggal + "</td>" +
+                    "<td>" + jadwalSholat.Maghrib + "</td>" +
+                    "</tr>";
+                document.getElementById("jadwal-sholat-isya").innerHTML = 
+                    "<tr>" +
+                    "<td>" + nama_kota + "</td>" +
+                    "<td>" + tanggal + "</td>" +
+                    "<td>" + jadwalSholat.Isha + "</td>" +
+                    "</tr>";
+            })
+            .catch(error => console.error("Error:", error));
+        }
+
+        getJadwalSholat();
+    </script>   
+</body>
+</html>
